@@ -1,41 +1,45 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using JetBrains.Annotations;
 
 namespace Emoji
 {
-    class Emoji
+  internal class Emoji
+  {
+    [NotNull] public string Name { get; }
+    [NotNull] public string FileName { get; }
+    [NotNull] public Uri Uri { get; }
+
+    public bool IsRetrieved => File.Exists(FileName);
+
+    [CanBeNull] private BitmapImage myBitmap;
+
+    public Emoji([NotNull] string name, [NotNull] Uri uri, [NotNull] string fileName)
     {
-        public string Name { get; }
-        public string FileName { get; }
-        public Uri Uri { get; }
-
-        public bool IsRetrieved => File.Exists(FileName);
-
-        private BitmapImage _bitmap;
-
-        public Emoji(string name, Uri uri, string fileName)
-        {
-            Name = name;
-            Uri = uri;
-            FileName = fileName;
-        }
-
-        public BitmapImage Bitmap()
-        {
-            if (_bitmap == null)
-            {
-                _bitmap = new BitmapImage();
-                _bitmap.BeginInit();
-                _bitmap.DecodePixelHeight = 16;
-                _bitmap.DecodePixelWidth = 16;
-                _bitmap.UriSource = new Uri(FileName, UriKind.Absolute);
-                _bitmap.EndInit();
-            }
-
-            return _bitmap;
-        }
-
-        public override string ToString() => Name;
+      Name = name;
+      Uri = uri;
+      FileName = fileName;
     }
+
+    [NotNull, MustUseReturnValue]
+    public ImageSource Bitmap()
+    {
+      if (myBitmap == null)
+      {
+        myBitmap = new BitmapImage();
+        myBitmap.BeginInit();
+        myBitmap.DecodePixelHeight = 16;
+        myBitmap.DecodePixelWidth = 16;
+        myBitmap.UriSource = new Uri(FileName, UriKind.Absolute);
+        myBitmap.EndInit();
+        myBitmap.Freeze();
+      }
+
+      return myBitmap;
+    }
+
+    public override string ToString() => Name;
+  }
 }

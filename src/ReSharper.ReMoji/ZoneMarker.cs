@@ -3,8 +3,8 @@ using JetBrains.ReSharper.Psi.CSharp;
 
 namespace ReSharper.ReMoji
 {
-    [ZoneMarker]
-    public class ZoneMarker : IRequire<ILanguageCSharpZone>
-    {
-    }
+  [ZoneMarker]
+  public class ZoneMarker : IRequire<ILanguageCSharpZone>
+  {
+  }
 }
